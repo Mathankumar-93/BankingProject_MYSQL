@@ -1,0 +1,82 @@
+Table:ACCOUNT
++-----+--------------+------------+
+| ano | aname        | address    |
++-----+--------------+------------+
+| 101 | nirja singh  | banglore   |
+| 102 | rohan gupta  | chennai    |
+| 103 | ali reza     | hyderabad  |
+| 104 | rishabh jain | chennai    |
+| 105 | simran kaur  | chandigarh |
++-----+--------------+------------+
+Table:TRANSACT
++------+------+--------+----------+------------+
+| trno | ano  | amount | type     | dot        |
++------+------+--------+----------+------------+
+| t001 |  101 |   2500 | withdraw | 2017-12-21 |
+| t002 |  103 |   3000 | deposit  | 2017-06-01 |
+| t003 |  102 |   2000 | withdraw | 2017-05-12 |
+| t004 |  103 |   1000 | deposit  | 2017-10-22 |
+| t005 |  102 |  12000 | deposit  | 2017-11-06 |
++------+------+--------+----------+------------+
+Queries:
+
+1.To Display Details of all transactions of type withdraw from TRANSACT table
+
+Ans: mysql> select * from transact
+    -> where type = 'withdraw';
+
+2.To Display ANO and AMOUNT of all deposit and withdrawals done in month of may-2017 from TRANSACT table
+
+Ans: mysql> select ano,amount,type from transact
+    -> where month(dot) = 5
+    -> and year(dot) = 2017;
+
+3.To Display first date of Transactions (DOT) from table TRANSACT for Account having ANO as 102
+
+Ans: mysql> select trno,ano,amount,type,min(dot) as first_transaction from transact
+    -> where ano=102;
+
+4.To Display ANO ,Aname,Amount and dot of those persons from Account and Transact table who 
+have done transactions less than or equal 3000.
+
+Ans: mysql>  select a.ano,a.aname,t.amount,t.dot from account as a
+    -> inner join transact as t on
+    -> a.ano = t.ano
+    -> where t.amount <= 3000;
+
+5.mysql> select ano,aname from account
+    -> where address not in ('chennai','banglore');  
++-----+-------------+
+| ano | aname       |
++-----+-------------+
+| 103 | ali reza    |
+| 105 | simran kaur |
++-----+-------------+
+6.mysql> select distinct ano from transact;
++------+
+| ano  |
++------+
+|  101 |
+|  102 |
+|  103 |
++------+
+7.mysql> select ano,count(*) as total_transactions ,min(amount) as minimum_amount from transact
+    -> group by ano
+    -> having count(*) > 1;
++------+--------------------+----------------+
+| ano  | total_transactions | minimum_amount |
++------+--------------------+----------------+
+|  102 |                  2 |           2000 |
+|  103 |                  2 |           1000 |
++------+--------------------+----------------+
+8.mysql> select count(*) as total_transactions,sum(amount) as total_amount from transact
+    -> where dot <= '2017-10-01';
++--------------------+--------------+
+| total_transactions | total_amount |
++--------------------+--------------+
+|                  2 |         5000 |
++--------------------+--------------+
+
+
+
+
